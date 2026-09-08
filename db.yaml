@@ -34,8 +34,12 @@
       filter:
       - version
     ignore_errors: yes
-    register: mysql_output
+    register: mysql_connection_output
 
-  - name: print mysql_output
+  - name: print output
     ansible.builtin.debug:
-      msg: "{{mysql_output}}"
+      msg: "{{mysql_connection_output}}"
+
+  - name: setting root passsword for mysql
+    ansible.builtin.command: mysql_secure_installation --set-root-pass {{mysql_root_password}}
+    when: "{{mysql_connection_output.failed is true}}"
