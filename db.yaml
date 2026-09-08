@@ -19,7 +19,7 @@
       state: started
       enabled: yes
 
-  - name: installing python dependencies to connet mysql
+  - name: installing python dependencies to connect mysql
     ansible.builtin.pip:
       name:
       - PyMySQL
@@ -33,3 +33,9 @@
       login_host: "{{login_host}}"
       filter:
       - version
+    ignore_errors: yes
+    register: mysql_output
+
+  - name: print mysql_output
+    ansible.builtin.debug:
+      msg: "{{mysql_output}}"
