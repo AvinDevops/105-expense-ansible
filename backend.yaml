@@ -2,7 +2,11 @@
   hosts: backend
   become: yes
   vars:
-
+    login_host: db.avinexpense.shop
+  vars_prompt:
+  - name: mysql_root_password
+    prompt: please enter your mysql root password
+    private: no
   tasks: #list of tasks/collections/modules
   - name: disabiling nodejs 18 version
     ansible.builtin.command: dnf module disable nodejs:18 -y
@@ -57,3 +61,16 @@
       name: backend
       state: started
       enabled: yes
+
+  - name: loading schema
+    community.mysql.mysql_db:
+      login_host: "{{login_host}}"
+      login_user: root
+      login_password: "{{mysql_root_password}}"
+      state: import
+      target: /app/schema/backend.sql
+
+  - name: restarting backend
+    ansible.builtin.service:
+      name: backend
+      state: restarted
