@@ -1,0 +1,28 @@
+- name: configuring mysql server
+  hosts: db
+  become: yes
+  vars:
+    login_host: db.avinexpense.shop
+  vars_prompt:
+  - name: mysql_root_password
+    prompt: please enter your mysql root password
+    private: no
+  tasks: #list of task/collections/modules
+  - name: installing mysql server
+    ansible.builtin.dnf:
+      name: mysql-server
+      state: installed
+
+  - name: starting and enabiling mysql server
+    ansible.builtin.service:
+      name: mysqld
+      state: started
+      enabled: yes
+
+  - name: check db connection
+    ansible.mysql.mysql_info:
+      login_user: root
+      login_password: "{{mysql_root_password}}"
+      login_host: "{{login_host}}"
+      filter:
+      - version
