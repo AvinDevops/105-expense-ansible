@@ -1,0 +1,20 @@
+- name: configuring backend server
+  hosts: backend
+  become: yes
+  vars:
+
+  tasks: #list of tasks/collections/modules
+  - name: disabiling nodejs 18 version
+    ansible.builtin.command: dnf module disable nodejs:18 -y
+
+  - name: enabiling nodejs 20 version
+    ansible.builtin.command: dnf module enable nodejs:20 -y
+  
+  - name: installing nodejs
+    ansible.builtin.dnf:
+      name: nodejs
+      state: installed
+
+  - name: create expense user
+    ansible.builtin.user:
+      name: expense
